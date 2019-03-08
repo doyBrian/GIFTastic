@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>GifTastic</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link rel="stylesheet" type="text/css" href="style.css">-->
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+
+    .jumbotron { 
+    padding-top: 25px;
+    padding-bottom: 25px;
+    }
+
+    button, img {
+      margin: 1px;
+    }
+
+    </style>
+
+</head>
+
+<body>
+    <iframe src="assets/audio/bensound-jazzyfrenchy.mp3" allow="autoplay" style="display:none" id="iframeAudio"></iframe>
+    
+    <!--Header-->
+    <div class="jumbotron">
+        <h1 class="display-4 font-weight-bold">G. I. L. F.</h1>
+        <p class="lead font-weight-bolder">GIFS I LIKE TO FOLLOW</p>
+        <hr class="bg-dark">
+        <p class="text-monospace">This is a customizeable GIF collection site tool.</p>
+        <p class="text-monospace">Not a porn site.</p>
+    </div>
+
+    <!--Main Container-->
+    <div class="container">
+
+        <!--Favorites section-->
+        <div class="row">
+            <div class="col col-lg-12 mb-4">
+                <h5 class="text-monospace">Favorites</h5>
+                <div id="favorite-view" aria-label="Fave buttons">
+ 
+                </div>
+            </div>
+        </div>
+
+        <!--Topics section-->
+        <div class="row">
+            <div class="col col-lg-12 mb-4">
+                <h5 class="text-monospace">Topics</h5>
+                <div id="buttons-view" aria-label="Topic buttons">
+                </div>
+            </div>
+        </div>
+
+        <!--Add new topics form-->
+        <div class="row">
+            <div class="col col-lg-12">
+                <form class="form-inline input-form">
+                    <div class="form-group mb-2">
+                        <label for="topic" class="sr-only"></label>
+                        <input type="text" readonly class="form-control-plaintext" id="topic" value="Add a subject you like.">
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="topic-input" class="sr-only"></label>
+                        <input type="text" class="form-control" id="topic-input" placeholder="Type here">
+                    </div>
+                    <button id="add-topic" type="submit" class="btn btn-secondary mb-2">GILF IT!</button>
+                </form>
+            </div>
+        </div>
+
+        <!--Add favorites form-->
+        <div class="row">
+            <div class="col col-lg-12">
+                <form class="form-inline input-form">
+                    <div class="form-group mb-2">
+                            <label for="topic-select" class="sr-only"></label>
+                            <input type="text" readonly class="form-control-plaintext" id="topic-select" value="Add to favorites.">
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="favorite-input" class="sr-only"></label>
+                        <input type="text" class="form-control" id="favorite-input" placeholder="Name of topic">
+                    </div>
+                    <button id="add-favorite" type="submit" class="btn btn-secondary mb-2">FAVE IT!</button>
+                </form>
+            </div>
+        </div>
+
+        <!--Deleting a topic-->
+        <div class="row">
+          <div class="col col-lg-12">
+              <form class="form-inline input-form">
+                  <div class="form-group mb-2">
+                          <label for="topic-delete" class="sr-only"></label>
+                          <input type="text" readonly class="form-control-plaintext" id="topic-delete" value="Delete a button.">
+                  </div>
+                  <div class="form-group mx-sm-3 mb-2">
+                      <label for="delete-input" class="sr-only"></label>
+                      <input type="text" class="form-control" id="delete-input" placeholder="Name of existing topic">
+                  </div>
+                  <button id="delete-button" type="submit" class="btn btn-secondary mb-2">NOT GILFY!</button>
+              </form>
+          </div>
+      </div>
+
+        <!--Gif videos section-->
+        <div class="row">
+            <div class="col col-lg-12 mt-4">
+                <h5 class="text-monospace">GIF WRAPPER</h5>
+                <hr class="bg-primary">
+            </div>
+        </div>
+
+        <div class="row">
+            <div id="gif-panel" class="col col-lg-12 mt-4">
+                
+            </div>
+        </div>
+
+    </div>
+
+    <!--Jquery CDN-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+      //GIPHY API key
+      var APIkey = "nECr5SIz2j118Kp1zdxDW0LB8Ynat2e0";
+      
+      // Initial array of topics
+      var topics = ["CATS", "FUNNY ANIMALS", "CUTE ANIMALS", "PEOPLE FALLING", "SHADE", "SMH", "ROLL EYES", "LOL", "UGLY CRYING",
+                    "EXPLOSION", "TWERKING", "DRUNK"];
+      var favorites = [];
+
+      var sound_effect;
+
+      //alternate button colors on Bootstrap
+      var colors = ["primary", "success", "danger", "warning", "info", "dark"];
+    
+      // Calling the renderButtons function at least once to display the initial list of topics
+      renderButtons();
+
+      // Function for displaying topic data
+      function renderButtons() {
+
+        // Deleting the topic buttons prior to adding new topic buttons
+        // (this is necessary otherwise we will have repeat buttons)
+        $("#buttons-view").empty();
+
+        var j = 0; //index for button colors
+
+        // Looping through the array of topics
+        for (var i = 0; i < topics.length; i++) {
+
+          // Then dynamicaly generating buttons for each topic in the array.
+          // This code $("<button>") is all jQuery needs to create the start and end tag. (<button></button>)
+          var a = $("<button>");
+    
+          // Adding a class
+          a.addClass("topic-button btn btn-" + colors[j]);
+          // Adding a data-attribute with a value of the topic at index i
+          a.attr("type", "button");
+          a.attr("data-topic", topics[i]);
+          // Providing the button's text with a value of the topic at index i
+          a.text(topics[i]);
+
+          j++;
+
+          if (j === colors.length)
+            j = 0;
+
+          // Adding the button to the HTML body
+          $("#buttons-view").append(a);
+          
+        }
+      }
+
+      // This function handles events where one button is clicked
+      $("#add-topic").on("click", function(event) {
+        // event.preventDefault() prevents the form from trying to submit itself.
+        // We're using a form so that the user can hit enter instead of clicking the button if they want
+        event.preventDefault();
+
+        sound_effect = new sound("assets/audio/Add.mp3");
+        sound_effect.play();
+        
+         // This line will grab the text from the input box
+        var topic = $("#topic-input").val().trim();
+        topic = topic.toUpperCase();
+
+        $("#topic-input").val('');  //clears the form
+
+        // The topic from the textbox is then added to our array
+        topics.push(topic);
+
+        // calling renderButtons which handles the processing of our topics array
+        renderButtons();
+
+      });
+
+      //event handler for when topic buttons are clicked
+      $(document).on("click", ".topic-button", showGifs);
+
+      function showGifs() {
+
+        sound_effect = new sound("assets/audio/GIF.mp3");
+        sound_effect.play();
+
+        // Storing our giphy API URL for a random cat image
+        var topic = $(this).attr("data-topic");
+
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=" + APIkey + "&limit=10";
+
+        // Perfoming an AJAX GET request to our queryURL
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        })
+
+        // After the data from the AJAX request comes back
+        .then(function(response) {
+
+        var results = response.data;
+        console.log(results);
+
+            var j = 0;
+
+            // Looping through each result item
+            for (var i = 0; i < results.length; i++) {
+
+            // Creating and storing a div tag
+            var topicDiv = $("<div class='d-inline-block'>");
+            
+            var rating = results[i].rating.toUpperCase();
+            // Creating a paragraph tag with the result item's rating
+            var p = $("<p>").text("Rated: " + rating);
+
+            // Creating and storing an image tag
+            var topicImage = $("<img>");
+            // Setting the src attribute of the image to a property pulled off the result item
+            topicImage.addClass("gif");
+            topicImage.attr("src", results[i].images.fixed_height_still.url);
+            topicImage.attr("data-state", "still");
+            topicImage.attr("data-still", results[i].images.fixed_height_still.url);
+            topicImage.attr("data-animate", results[i].images.fixed_height.url);
+
+
+            // Appending the paragraph and image tag to the animalDiv
+            topicDiv.append(topicImage);
+            topicDiv.append('<br><a href="' + results[i].images.original.url + '" target="_blank" download><button type="button" class="btn btn-secondary btn-sm">Download</button></a>');
+            topicDiv.append(p);
+
+            j++;
+
+            if (j === colors.length)
+            j = 0;
+            
+
+            // Prependng the topicDiv to the HTML page in the "#gif-panel" div
+            $("#gif-panel").prepend(topicDiv);
+            }
+
+            $(".gif").on("click", function() {
+                // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+                var state = $(this).attr("data-state");
+                // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+                // Then, set the image's data-state to animate
+                // Else set src to the data-still value
+                if (state === "still") {
+                    $(this).attr("src", $(this).attr("data-animate"));
+                    $(this).attr("data-state", "animate");
+                } else {
+                    $(this).attr("src", $(this).attr("data-still"));
+                    $(this).attr("data-state", "still");
+                }
+            });
+
+        });
+
+      }
+        
+      // This function handles events where add favorite button is clicked
+      $("#add-favorite").on("click", function(event) {
+        // event.preventDefault() prevents the form from trying to submit itself.
+        // We're using a form so that the user can hit enter instead of clicking the button if they want
+        event.preventDefault();
+
+        sound_effect = new sound("assets/audio/Add.mp3");
+        sound_effect.play();
+
+        // This line will grab the text from the input box
+        var favorite = $("#favorite-input").val().trim();
+        favorite = favorite.toUpperCase();
+
+        $("#favorite-input").val('');   //clears the form after sumbit
+
+        //removes the button from the main topic section
+        for( var i = 0; i < topics.length; i++){ 
+          if ( topics[i] === favorite) {
+            topics.splice(i, 1); 
+          }
+        }
+        
+        // The topic from the textbox is then added to our array
+        favorites.push(favorite);
+
+        // calling renderButtons which handles the processing of our favorites array
+        renderButtons();
+        renderFaveButtons();
+
+      });
+
+      // Function for displaying favorite topics
+      function renderFaveButtons() {
+        
+        // Deleting the favorite buttons prior to adding new topic buttons
+        // (this is necessary otherwise we will have repeat buttons)
+        $("#favorite-view").empty();
+         
+        var j = 0;
+        // Looping through the array of favoritess
+        for (var i = 0; i < favorites.length; i++) {
+
+          // Then dynamicaly generating buttons for each topic in the array.
+          // This code $("<button>") is all jQuery needs to create the start and end tag. (<button></button>)
+          var a = $("<button>");
+          // Adding a class
+          a.addClass("topic-button btn btn-" + colors[j]);
+          // Adding a data-attribute with a value of the topic at index i
+          a.attr("type", "button");
+          a.attr("data-topic", favorites[i]);
+          // Providing the button's text with a value of the topic at index i
+          a.text(favorites[i]);
+
+          if (j === colors.length)
+            j = 0;
+          else 
+            j++;
+          // Adding the button to the HTML
+          $("#favorite-view").append(a);
+        }
+
+      }
+
+        // This function handles events where delete button is clicked
+        $("#delete-button").on("click", function(event) {
+        // event.preventDefault() prevents the form from trying to submit itself.
+        // We're using a form so that the user can hit enter instead of clicking the button if they want
+        event.preventDefault();
+
+        sound_effect = new sound("assets/audio/Delete.mp3");
+        sound_effect.play();
+
+        // This line will grab the text from the input box
+        var deletion = $("#delete-input").val().trim();
+        deletion = deletion.toUpperCase();
+
+        $("#delete-input").val('');   //clears the form after sumbit
+
+        //removes the topic button
+        for( var i = 0; i < topics.length; i++){ 
+          if ( topics[i] === deletion) 
+            topics.splice(i, 1); 
+          else (favorites[i] === deletion) 
+            favorites.splice(i, 1);
+        }
+        
+        // calling renderButtons which handles the processing of our topic/favorites array
+        renderButtons();
+        renderFaveButtons();
+
+      });
+
+      //help with sound
+      function sound(src) {
+        this.sound = document.createElement("audio");
+        this.sound.src = src;
+        this.sound.setAttribute("preload", "auto");
+        this.sound.setAttribute("controls", "none");
+        this.sound.style.display = "none";
+        document.body.appendChild(this.sound);
+        this.play = function(){
+          this.sound.play();
+        }
+        this.stop = function(){
+          this.sound.pause();
+        }
+      }
+    
+    </script>
+
+</body>
+</html>
