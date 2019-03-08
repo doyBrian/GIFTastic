@@ -7,7 +7,7 @@ In this assignment, I used the GIPHY API to make a dynamic web page that populat
 
 ### Design Concept
 
-1. An array of strings have been initially declared, each one related to a topic that interests me personall. This has been saved it to a variable called `topics`. This may not be a necessary step but it helps pre-fill the buttons on the page.
+1. An array of strings have been initially declared, each one related to a topic that interests me personally. This has been saved to a variable called `topics`. This may not be a necessary step but it helps pre-fill the buttons on the page.
 * User can make a list to their own liking.
 
 2. As the page loads, the topics in this array are loaded and create buttons in the HTML.
