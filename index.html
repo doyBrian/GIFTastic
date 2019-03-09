@@ -12,8 +12,8 @@
     <style>
 
     .jumbotron { 
-    padding-top: 25px;
-    padding-bottom: 25px;
+    padding-top: 15px;
+    padding-bottom: 15px;
     }
 
     button, img {
@@ -25,7 +25,6 @@
 </head>
 
 <body>
-    <iframe src="assets/audio/bensound-jazzyfrenchy.mp3" allow="autoplay" style="display:none" id="iframeAudio"></iframe>
     
     <!--Header-->
     <div class="jumbotron">
@@ -111,15 +110,22 @@
 
         <!--Gif videos section-->
         <div class="row">
-            <div class="col col-lg-12 mt-4">
+            <div class="col col-lg-2 mt-4">
                 <h5 class="text-monospace">GIF WRAPPER</h5>
-                <hr class="bg-primary">
             </div>
+              <form class="form-inline input-form">
+                <button id="clear-button" type="submit" class="btn btn-danger btn-sm">RIP</button>
+                <div class="form-group mb-2">
+                  <input type="text" readonly class="form-control-plaintext" id="clear" value="GIF Wrapper (CLEAR).">
+                </div>
+              </form>
         </div>
+
+        <hr class="bg-primary">
 
         <div class="row">
             <div id="gif-panel" class="col col-lg-12 mt-4">
-                
+                 
             </div>
         </div>
 
@@ -208,7 +214,7 @@
 
       function showGifs() {
 
-        sound_effect = new sound("assets/audio/GIF.mp3");
+        sound_effect = new sound("assets/audio/Panel_In.mp3");
         sound_effect.play();
 
         // Storing our giphy API URL for a random cat image
@@ -375,6 +381,20 @@
         renderFaveButtons();
 
       });
+
+       // This function handles events where clear button is clicked
+       $("#clear-button").on("click", function(event) {
+        // event.preventDefault() prevents the form from trying to submit itself.
+        // We're using a form so that the user can hit enter instead of clicking the button if they want
+          event.preventDefault();
+
+          sound_effect = new sound("assets/audio/Panel_Out.mp3");
+          sound_effect.play();
+
+          $("#gif-panel").empty();
+
+        });
+
 
       //help with sound
       function sound(src) {
