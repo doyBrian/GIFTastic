@@ -5,6 +5,9 @@ A project that makes use of an API call to make a dynamic web page
 
 In this assignment, I used the GIPHY API to make a dynamic web page that populates with gifs of whatever the user chooses. It calls the GIPHY API and uses JavaScript and jQuery to change the HTML of the site.
 
+### Deployed Site Link
+https://doybrian.github.io/GIFTastic/
+
 ### Design Concept
 
 1. An array of strings have been initially declared, each one related to a topic that interests me personally. This has been saved to a variable called `topics`. This may not be a necessary step but it helps pre-fill the buttons on the page.
