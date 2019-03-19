@@ -32,7 +32,7 @@ https://doybrian.github.io/GIFTastic/
 2. The app is developed to allow users to request additional gifs to be added to the page after clicking on other buttons.
 * Each request ADDs 10 gifs to the page, NOT overwrite the existing gifs.
 
-3. Included a 1-click download button for each gif. Technically GIPHY has disabled download on the GIFs. The download instead opens the gif on the GHIPY web site and can saved or possibly downloaded from there.
+3. Included a 1-click button for each gif to its original URL. GIPHY has disabled download on the GIFs. The button instead opens the gif on the GHIPY web site and can saved or possibly downloaded from there.
 
 4. The app allows users to add their favorite gifs to a `favorites` section.
 * This will persist even when they select or add a new topic.
